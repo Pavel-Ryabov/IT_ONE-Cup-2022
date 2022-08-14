@@ -1,0 +1,45 @@
+[
+    {
+        "tableName": "Artists",
+        "columnsAmount": 3,
+        "primaryKey": "id",
+        "columnInfos": [
+            {
+                "title": "id",
+                "type": "int4"
+            },
+            {
+                "title": "name",
+                "type": "varchar"
+            },
+            {
+                "title": "age",
+                "type": "int4"
+            }
+        ]
+    },
+    {
+        "tableName": "Job",
+        "columnsAmount": 4,
+        "primaryKey": "id",
+        "columnInfos": [
+            {
+                "title": "id",
+                "type": "int4"
+            },
+            {
+                "title": "name",
+                "type": "varchar"
+            },
+            {
+                "title": "salary",
+                "type": "int4"
+            },
+            {
+                "title": "address",
+                "type": "varchar"
+            }
+        ]
+    }
+]
+
