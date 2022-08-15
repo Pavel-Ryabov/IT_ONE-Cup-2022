@@ -24,7 +24,7 @@ public class TableController {
 
     @PostMapping("/create-table")
     public ResponseEntity<Void> create(@RequestBody @Valid Table t, BindingResult br) {
-        if (br.hasErrors()) {
+        if (br.hasErrors() || t.getColumnsAmount() != t.getColumnInfos().size()) {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
         try {

@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -168,6 +167,51 @@ public class ReportControllerIT {
         String url2 = "http://localhost:" + this.port + "/api/report/get-report-by-id/5";
         ResponseEntity<String> e2 = this.restTemplate.getForEntity(url2, String.class);
         assertEquals(HttpStatus.NOT_ACCEPTABLE, e2.getStatusCode());
+    }
+    
+    @Test
+    public void testRenameTable() throws Exception {
+        System.out.println("ReportControllerIT testRenameTable");
+        testCreate2();
+        String addUrl = "http://localhost:" + this.port + "/api/single-query/add-new-query";
+        String renameQuery = "{\"queryId\":20,\"query\":\"alter table Artists rename to Customer\"}";
+        this.restTemplate.postForEntity(addUrl, new HttpEntity(renameQuery, headers), Void.class);
+        String execUrl = "http://localhost:" + this.port + "/api/single-query/execute-single-query-by-id/20";
+        this.restTemplate.getForEntity(execUrl, Void.class);
+        String url = "http://localhost:" + this.port + "/api/report/get-report-by-id/2";
+        String r = Files.readString(Paths.get(this.getClass().getClassLoader().getResource("report2-result.json").toURI()));
+        ResponseEntity<String> e1 = this.restTemplate.getForEntity(url, String.class);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, e1.getStatusCode());
+    }
+    
+    @Test
+    public void testRenameColumn() throws Exception {
+        System.out.println("ReportControllerIT testRenameColumn");
+        testCreate2();
+        String addUrl = "http://localhost:" + this.port + "/api/single-query/add-new-query";
+        String renameQuery = "{\"queryId\":20,\"query\":\"alter table Artists alter column id rename to artistId\"}";
+        this.restTemplate.postForEntity(addUrl, new HttpEntity(renameQuery, headers), Void.class);
+        String execUrl = "http://localhost:" + this.port + "/api/single-query/execute-single-query-by-id/20";
+        this.restTemplate.getForEntity(execUrl, Void.class);        
+        String url = "http://localhost:" + this.port + "/api/report/get-report-by-id/2";
+        String r = Files.readString(Paths.get(this.getClass().getClassLoader().getResource("report2-result.json").toURI()));
+        ResponseEntity<String> e1 = this.restTemplate.getForEntity(url, String.class);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, e1.getStatusCode());
+    }
+    
+    @Test
+    public void testChangeType() throws Exception {
+        System.out.println("ReportControllerIT testChangeType");
+        testCreate2();
+        String addUrl = "http://localhost:" + this.port + "/api/single-query/add-new-query";
+        String renameQuery = "{\"queryId\":20,\"query\":\"alter table Artists alter column id set data type varchar\"}";
+        this.restTemplate.postForEntity(addUrl, new HttpEntity(renameQuery, headers), Void.class);
+        String execUrl = "http://localhost:" + this.port + "/api/single-query/execute-single-query-by-id/20";
+        this.restTemplate.getForEntity(execUrl, Void.class);        
+        String url = "http://localhost:" + this.port + "/api/report/get-report-by-id/2";
+        String r = Files.readString(Paths.get(this.getClass().getClassLoader().getResource("report2-result.json").toURI()));
+        ResponseEntity<String> e1 = this.restTemplate.getForEntity(url, String.class);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE, e1.getStatusCode());
     }
 
 }

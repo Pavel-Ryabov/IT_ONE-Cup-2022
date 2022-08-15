@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Table implements Serializable {
 
-    @Pattern(regexp = "^[A-Za-z][A-Za-z0-9_-]+$")
+//    @Pattern(regexp = "^[A-Za-z][A-Za-z0-9_-]+$")
     private String tableName;
     private String primaryKey;
     private int columnsAmount;

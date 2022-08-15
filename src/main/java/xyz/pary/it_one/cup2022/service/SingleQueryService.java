@@ -13,6 +13,7 @@ public class SingleQueryService {
 
     private final SingleQueryRepository singleQueryRepository;
     private final QueryExecutor queryExecutor;
+    private final TableQueryService tableQueryService;
 
     @Transactional
     public void addQuery(SingleQuery query) {
@@ -36,6 +37,7 @@ public class SingleQueryService {
     public void executeQuery(int id) {
         SingleQuery q = singleQueryRepository.findById(id).get();
         queryExecutor.execute(q);
+        tableQueryService.checkTables(q);
     }
 
     @Transactional(readOnly = true)

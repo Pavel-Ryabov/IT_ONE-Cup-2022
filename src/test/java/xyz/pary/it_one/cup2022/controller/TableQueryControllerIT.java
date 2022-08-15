@@ -180,4 +180,59 @@ public class TableQueryControllerIT {
         ObjectMapper om = new ObjectMapper();
         assertEquals(om.readTree(r2), om.readTree(q2));
     }
+    
+    @Test
+    public void testDeleteTable() throws Exception {
+        System.out.println("TableQueryControllerIT testDeleteTable");
+        testAdd();
+        String addUrl = "http://localhost:" + this.port + "/api/table-query/add-new-query-to-table";
+        String dropQuery = "{\"queryId\":10,\"tableName\":\"Customer\",\"query\":\"drop table Customer; select * from Artists\"}";
+        this.restTemplate.postForEntity(addUrl, new HttpEntity(dropQuery, headers), Void.class);
+        String execUrl = "http://localhost:" + this.port + "/api/table-query/execute-table-query-by-id/10";
+        this.restTemplate.getForEntity(execUrl, Void.class);
+        String r = "[{\"queryId\":1,\"tableName\":\"Artists\",\"query\":\"раз dva\"},"
+                + "{\"queryId\":2,\"tableName\":\"Artists\",\"query\":\"select * from Artists\"}]";
+        String getAllUrl = "http://localhost:" + this.port + "/api/table-query/get-all-table-queries";
+        String q = this.restTemplate.getForObject(getAllUrl, String.class);
+        ObjectMapper om = new ObjectMapper();
+        assertEquals(om.readTree(r), om.readTree(q));
+    }
+    
+    @Test
+    public void testRenameTable() throws Exception {
+        System.out.println("TableQueryControllerIT testRenameTable");
+        testAdd();
+        String addUrl = "http://localhost:" + this.port + "/api/table-query/add-new-query-to-table";
+        String renameQuery = "{\"queryId\":10,\"tableName\":\"Customer\",\"query\":\"alter table Customer rename to Artist;"
+                + "select * from Artists; alter table Artists rename to Job;\"}";
+        this.restTemplate.postForEntity(addUrl, new HttpEntity(renameQuery, headers), Void.class);
+        String execUrl = "http://localhost:" + this.port + "/api/table-query/execute-table-query-by-id/10";
+        this.restTemplate.getForEntity(execUrl, Void.class);
+        String r = "[{\"queryId\":1,\"tableName\":\"Job\",\"query\":\"раз dva\"},"
+                + "{\"queryId\":2,\"tableName\":\"Job\",\"query\":\"select * from Artists\"},"
+                + "{\"queryId\":3,\"tableName\":\"Artist\",\"query\":\"select * from Customer\"},"
+                + "{\"queryId\":10,\"tableName\":\"Artist\",\"query\":\"alter table Customer rename to Artist;"
+                + "select * from Artists; alter table Artists rename to Job;\"}]";
+        String getAllUrl = "http://localhost:" + this.port + "/api/table-query/get-all-table-queries";
+        String q = this.restTemplate.getForObject(getAllUrl, String.class);
+        ObjectMapper om = new ObjectMapper();
+        assertEquals(om.readTree(r), om.readTree(q));
+    }
+    
+    @Test
+    public void testRenameTableAndDeleteFromSingleQuery() throws Exception {
+        System.out.println("TableQueryControllerIT testRenameTableAndDeleteFromSingleQuery");
+        testRenameTable();
+        String addUrl = "http://localhost:" + this.port + "/api/single-query/add-new-query";
+        String dropQuery = "{\"queryId\":20,\"query\":\"drop table Artist\"}";
+        this.restTemplate.postForEntity(addUrl, new HttpEntity(dropQuery, headers), Void.class);
+        String execUrl = "http://localhost:" + this.port + "/api/single-query/execute-single-query-by-id/20";
+        this.restTemplate.getForEntity(execUrl, Void.class);
+        String r = "[{\"queryId\":1,\"tableName\":\"Job\",\"query\":\"раз dva\"},"
+                + "{\"queryId\":2,\"tableName\":\"Job\",\"query\":\"select * from Artists\"}]";
+        String getAllUrl = "http://localhost:" + this.port + "/api/table-query/get-all-table-queries";
+        String q = this.restTemplate.getForObject(getAllUrl, String.class);
+        ObjectMapper om = new ObjectMapper();
+        assertEquals(om.readTree(r), om.readTree(q));
+    }
 }

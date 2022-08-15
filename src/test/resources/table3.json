@@ -1,6 +1,6 @@
 {
     "tableName": "CustomerЛАЛА",
-    "columnsAmount": 12,
+    "columnsAmount": 19,
     "columnInfos": [
         {
             "title": "CustomerId",
