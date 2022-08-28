@@ -36,6 +36,9 @@ public class ReportController {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
         try {
+            if (reportService.getReport(r.getReportId()) != null) {
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            }
             reportService.createReport(r);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {

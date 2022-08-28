@@ -77,9 +77,9 @@ public class TableQueryController {
     public ResponseEntity<List<TableQuery>> getAllByTableName(@PathVariable String name) {
         try {
             Table t = tableService.getTable(name);
-            if (t == null) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
+//            if (t == null) {
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            }
             return new ResponseEntity<>(tableQueryService.getAllQueries(name), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);

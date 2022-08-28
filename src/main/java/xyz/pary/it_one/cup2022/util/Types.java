@@ -24,6 +24,7 @@ public class Types {
     }
 
     public static String resolveType(String t) {
+        t = t.toLowerCase();
         int i = t.lastIndexOf("(");
         t = i == -1 ? t : t.substring(0, i);
         String rt = INSTANCE.get(t);
